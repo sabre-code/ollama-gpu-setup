@@ -2,83 +2,52 @@
 
 This guide provides step-by-step instructions for setting up Ollama with NVIDIA GPU support using Docker Compose on Ubuntu.
 
-## Prerequisites
-
-- Ubuntu 22.04 or later
-- NVIDIA GPU with compute capability 6.1 or higher
-- Sudo/root access
-
-## Hardware Requirements
-
-- NVIDIA GPU (tested with GeForce MX230)
-- At least 4GB RAM
-- 10GB+ free disk space
 
 ## Step 1: Install NVIDIA Drivers
 
 First, check if NVIDIA drivers are already installed:
 
-```bash
 nvidia-smi
 ```
-
-If not installed, install the drivers:
-
-```bash
-sudo ubuntu-drivers autoinstall
 ```
 
 After installation, reboot your system:
 
-```bash
 sudo reboot
 ```
-
-Verify the installation:
-
-```bash
 nvidia-smi
 ```
 
 You should see output showing your GPU information.
 
 ## Step 2: Install Docker
+```
 
 If Docker is not already installed:
 
-```bash
 # Update package index
-sudo apt update
-
-# Install Docker
-sudo apt install -y docker.io
-
-# Start and enable Docker
+```
 sudo systemctl start docker
 sudo systemctl enable docker
 
 # Add your user to docker group (requires logout/login or newgrp docker)
 sudo usermod -aG docker $USER
 ```
+```
 
 ## Step 3: Install NVIDIA Container Toolkit
 
 ### Add NVIDIA Container Toolkit Repository
 
-```bash
 # Get distribution information
-distribution=$(. /etc/os-release;echo $ID$VERSION_ID)
-
-# Add NVIDIA GPG key
-curl -fsSL https://nvidia.github.io/libnvidia-container/gpgkey | sudo apt-key add -
-
-# Add NVIDIA Container Toolkit repository
+```
 curl -s -L https://nvidia.github.io/libnvidia-container/$distribution/libnvidia-container.list | sudo tee /etc/apt/sources.list.d/nvidia-container-toolkit.list
 ```
 
 ### Install the Toolkit
 
 ```bash
+```
 # Update package list
 sudo apt update
 
@@ -222,11 +191,6 @@ nvtop
 
 ```
 testgpu/
-├── docker-compose.yml
-├── README.md
-└── models/              # Ollama models will be stored here
-    ├── blobs/
-    └── manifests/
 ```
 
 ## Troubleshooting
