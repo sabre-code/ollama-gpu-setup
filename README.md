@@ -179,10 +179,10 @@ Expected output:
 sudo docker exec -it testgpu-ollama-1 bash
 
 # Inside the container, pull a small model
-ollama pull qwen2:0.5b
+ollama pull qwen3:0.6b
 
 # Test the model
-ollama run qwen2:0.5b "Hello, how are you?"
+ollama run qwen3:0.6b "Hello, how are you?"
 
 # Exit the container
 exit
@@ -194,7 +194,7 @@ exit
 curl -X POST http://localhost:11434/api/generate \
   -H "Content-Type: application/json" \
   -d '{
-    "model": "qwen2:0.5b",
+    "model": "qwen3:0.6b",
     "prompt": "Why is the sky blue?",
     "stream": false
   }'
@@ -269,9 +269,7 @@ sudo docker compose logs -f ollama
 
 Recommended models for different GPU memory sizes:
 
-- **2GB GPU**: qwen2:0.5b, phi3:mini
-- **4GB GPU**: llama3.2:3b, qwen2:1.5b
-- **8GB+ GPU**: llama3.1:8b, qwen2:7b
+- **2GB GPU**: qwen3:0.6b
 
 ## API Usage Examples
 
@@ -281,7 +279,7 @@ Recommended models for different GPU memory sizes:
 curl -X POST http://localhost:11434/api/generate \
   -H "Content-Type: application/json" \
   -d '{
-    "model": "qwen2:0.5b",
+    "model": "qwen3:0.6b",
     "prompt": "Explain quantum computing",
     "stream": false
   }'
