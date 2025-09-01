@@ -2,52 +2,71 @@
 
 This guide provides step-by-step instructions for setting up Ollama with NVIDIA GPU support using Docker Compose on Ubuntu.
 
-
 ## Step 1: Install NVIDIA Drivers
 
 First, check if NVIDIA drivers are already installed:
 
+```bash
 nvidia-smi
 ```
+
+If not installed, install the drivers:
+
+```bash
+sudo ubuntu-drivers autoinstall
 ```
 
 After installation, reboot your system:
 
+```bash
 sudo reboot
 ```
+
+Verify the installation:
+
+```bash
 nvidia-smi
 ```
 
 You should see output showing your GPU information.
 
 ## Step 2: Install Docker
-```
 
 If Docker is not already installed:
 
+```bash
 # Update package index
-```
+sudo apt update
+
+# Install Docker
+sudo apt install -y docker.io
+
+# Start and enable Docker
 sudo systemctl start docker
 sudo systemctl enable docker
 
 # Add your user to docker group (requires logout/login or newgrp docker)
 sudo usermod -aG docker $USER
 ```
-```
 
 ## Step 3: Install NVIDIA Container Toolkit
 
 ### Add NVIDIA Container Toolkit Repository
 
+```bash
 # Get distribution information
-```
+distribution=$(. /etc/os-release;echo $ID$VERSION_ID)
+
+# Add NVIDIA GPG key
+curl -fsSL https://nvidia.github.io/libnvidia-container/gpgkey | sudo apt-key add -
+
+# Add NVIDIA Container Toolkit repository
 curl -s -L https://nvidia.github.io/libnvidia-container/$distribution/libnvidia-container.list | sudo tee /etc/apt/sources.list.d/nvidia-container-toolkit.list
 ```
 
 ### Install the Toolkit
 
 ```bash
-```
 # Update package list
 sudo apt update
 
@@ -73,6 +92,7 @@ cat /etc/docker/daemon.json
 ```
 
 You should see:
+
 ```json
 {
     "runtimes": {
@@ -133,6 +153,7 @@ sudo docker compose logs ollama
 ```
 
 Look for these indicators in the logs:
+
 - `Device 0: NVIDIA [Your GPU Model], compute capability X.X`
 - `loaded CUDA backend from /usr/lib/ollama/libggml-cuda.so`
 - `CUDA0 model buffer size = XXX.XX MiB`
@@ -146,6 +167,7 @@ curl http://localhost:11434/api/version
 ```
 
 Expected output:
+
 ```json
 {"version":"0.x.x"}
 ```
@@ -191,6 +213,11 @@ nvtop
 
 ```
 testgpu/
+├── docker-compose.yml
+├── README.md
+└── models/              # Ollama models will be stored here
+    ├── blobs/
+    └── manifests/
 ```
 
 ## Troubleshooting
@@ -198,19 +225,20 @@ testgpu/
 ### Common Issues
 
 1. **"NVIDIA driver not found"**
+
    - Ensure NVIDIA drivers are installed: `nvidia-smi`
    - Reboot after driver installation
-
 2. **"nvidia-container-runtime not found"**
+
    - Ensure nvidia-container-toolkit is installed
    - Check Docker daemon configuration: `cat /etc/docker/daemon.json`
    - Restart Docker: `sudo systemctl restart docker`
-
 3. **"Permission denied" for Docker commands**
+
    - Add user to docker group: `sudo usermod -aG docker $USER`
    - Log out and log back in, or run: `newgrp docker`
-
 4. **Container starts but no GPU detected**
+
    - Check if `runtime: nvidia` is in docker-compose.yml
    - Verify GPU device reservation in compose file
    - Check container logs: `sudo docker compose logs ollama`
@@ -248,6 +276,7 @@ Recommended models for different GPU memory sizes:
 ## API Usage Examples
 
 ### Generate Text
+
 ```bash
 curl -X POST http://localhost:11434/api/generate \
   -H "Content-Type: application/json" \
@@ -259,11 +288,13 @@ curl -X POST http://localhost:11434/api/generate \
 ```
 
 ### List Models
+
 ```bash
 curl http://localhost:11434/api/tags
 ```
 
 ### Pull Model via API
+
 ```bash
 curl -X POST http://localhost:11434/api/pull \
   -H "Content-Type: application/json" \
