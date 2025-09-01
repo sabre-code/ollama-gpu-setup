@@ -298,7 +298,7 @@ curl http://localhost:11434/api/tags
 ```bash
 curl -X POST http://localhost:11434/api/pull \
   -H "Content-Type: application/json" \
-  -d '{"name": "qwen2:0.5b"}'
+  -d '{"name": "qwen3:0.6b"}'
 ```
 
 ## Security Considerations
